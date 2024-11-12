@@ -1,0 +1,4 @@
+{
+"文件名": "axios_request.js",
+"代码内容": "```javascript\n\naxios.post('http://39.105.204.120/qfjk_api/verify', {\n  'temp_token': temp_token\n}, {\n  headers: {\n    \"Content-Type\": \"application/x-www-form-urlencoded\"\n  },\n  responseType: 'json' // 确保响应类型被正确解析\n})\n.then(response => {\n  console.log(response);\n  if (response.status === 200 && response.data.status === 1) {\n    console.log(\"verify success\");\n    this.real_mounted();\n  } else {\n    console.log(\"verify fail\");\n    cookie.delCookie(\"temp_token\");\n    uni.redirectTo({\n      url: '/pages/login/login'\n    });\n  }\n})\n.catch(error => {\n  console.error(\"Error making request\", error);\n});\n\n```"
+}
