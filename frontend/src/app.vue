@@ -4,3 +4,9 @@
     <NuxtPage></NuxtPage>
   </div>
 </template>
+
+<style>
+body {
+  font-family: 'qiantubifengshouxieti';
+}
+</style>
