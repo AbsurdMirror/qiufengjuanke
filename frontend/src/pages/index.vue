@@ -1,11 +1,11 @@
 <template>
-  <wired-card elevation="1" class="container-card">
+  <div class="login-container-card">
     <h1>秋风倦客</h1>
-    <wired-card elevation="3" class="input-card">
+    <wired-card elevation="3" class="login-input-card">
       <input placeholder="输入密钥" v-model="passData" />
     </wired-card>
-    <wired-button class="commit-btn" elevation="2" v-on:click="greet">登录</wired-button>
-  </wired-card>
+    <wired-button class="login-commit-btn" elevation="2" v-on:click="greet">登录</wired-button>
+  </div>
 </template>
 
 <script>
@@ -23,29 +23,20 @@ export default {
     greet() {
       console.log(this.passData)
       axios({
-        url: 'http://39.105.204.120/qfjk_api/login',
+        withCredentials: true,
+        url: '/qfjk_api/login',
         method: 'post',
         data: {
           'login_token': this.passData
         },
         headers: {
-          "Content-Type": "application/x-www-form-urlencoded"
+          "Content-Type": "application/json"
         },
-        transformRequest: [(data, headers) => {
-          // 因为Content-Type设置为application/x-www-form-urlencoded，所以需要将数据转换为这种格式
-          let params = [];
-          for (let key in data) {
-            if (data.hasOwnProperty(key)) {
-              params.push(encodeURIComponent(key) + '=' + encodeURIComponent(data[key]));
-            }
-          }
-          return params.join('&');
-        }],
         responseType: 'json' // 假设服务器返回JSON格式的数据
       }).then(response => {
         console.log(response);
         if (response.status === 200 && response.data.status === 1) {
-          cookie.setCookie('temp_token', response.data.temp_token, 1);
+          // cookie.setCookie('temp_token', response.data.temp_token, 1);
           console.log("login success", "temp_token", cookie.getCookie('temp_token'));
           navigateTo('/msg_write')
         } else {
@@ -61,7 +52,7 @@ export default {
 </script>
 
 <style lang="scss">
-.container-card {
+.login-container-card {
   width: 90%;
   height: 60vh;
   margin-left: calc(5% - 4px);
@@ -75,7 +66,7 @@ export default {
   }
 }
 
-.input-card {
+.login-input-card {
   width: 80%;
   margin-left: calc(10% - 4px);
   height: 40px;
@@ -94,7 +85,7 @@ export default {
 
 }
 
-.commit-btn {
+.login-commit-btn {
   width: 80px;
   margin-top: 5vh;
   margin-left: calc(50% - 40px);

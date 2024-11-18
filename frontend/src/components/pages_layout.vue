@@ -1,11 +1,11 @@
 <template>
-  <div class="msg-write-container-card">
+  <wired-card elevation="1" class="msg-write-container-card">
     <h1>留言板</h1>
     <wired-card elevation="3" class="msg-write-textarea-card">
       <textarea placeholder="说点什么" v-model="message"></textarea>
     </wired-card>
     <wired-button class="msg-write-commit-btn" elevation="2" v-on:click="greet">Submit</wired-button>
-  </div>
+  </wired-card>
 </template>
 
 <script>
@@ -41,7 +41,7 @@ export default {
   },
   methods: {
     greet() {
-      var that = this;
+      alert('Hello ' + this.message + '!')
       //axios post
       axios({
         withCredentials: true,
@@ -57,8 +57,6 @@ export default {
         responseType: 'json' // 假设服务器返回JSON格式的数据
       }).then(function (response) {
         console.log(response);
-        alert('提交成功');
-        that.message = ''
       })
         .catch(function (error) {
           console.log(error);
@@ -70,8 +68,9 @@ export default {
 
 <style lang="scss">
 .msg-write-container-card {
-  height: calc(90vh - 20px);
-  width: calc(100% - 20px);
+  width: 90%;
+  height: 90vh;
+  margin-left: calc(5% - 4px);
 
   h1 {
     text-align: center;
@@ -82,7 +81,7 @@ export default {
 
 .msg-write-textarea-card {
   width: 80%;
-  margin-left: calc(10% + 6px);
+  margin-left: calc(10% - 4px);
   height: calc(90vh - 5vh - 3vh - 5vh - 20vh);
 
   textarea {
