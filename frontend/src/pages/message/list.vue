@@ -35,7 +35,7 @@ export default {
       // 头像字典
       avatars: {
         'dongzhengxiang': a,
-        'qinqyiting': b
+        'qingyiting': b
       }
     };
   },
@@ -55,12 +55,12 @@ export default {
           this.fetchData(); // 获取第一页数据
         } else {
           console.log("verify fail");
-          navigateTo('/')
+          navigateTo('/login')
         }
       })
       .catch(error => {
         console.error("Request failed:", error);
-        navigateTo('/')
+        navigateTo('/login')
       });
 
     // while(!verify_done){

@@ -4,7 +4,7 @@
     <wired-card elevation="3" class="msg-write-textarea-card">
       <textarea placeholder="说点什么" v-model="message"></textarea>
     </wired-card>
-    <wired-button class="msg-write-commit-btn" elevation="2" v-on:click="greet">Submit</wired-button>
+    <wired-button class="msg-write-commit-btn" :disabled="submit_status" elevation="2" v-on:click="submit">提交</wired-button>
   </div>
 </template>
 
@@ -15,7 +15,8 @@ import axios from 'axios'
 export default {
   data() {
     return {
-      message: ''
+      message: '',
+      submit_status: false
     }
   },
   mounted() {
@@ -31,17 +32,25 @@ export default {
           console.log("verify success");
         } else {
           console.log("verify fail");
-          navigateTo('/')
+          navigateTo('/login')
         }
       })
       .catch(error => {
         console.error("Request failed:", error);
-        navigateTo('/')
+        navigateTo('/login')
       });
   },
   methods: {
-    greet() {
+    submit() {
       var that = this;
+      if (this.message === '') {
+        alert('请输入内容');
+        return;
+      }
+      if (this.submit_status) {
+        return;
+      }
+      this.submit_status = true;
       //axios post
       axios({
         withCredentials: true,
@@ -59,6 +68,7 @@ export default {
         console.log(response);
         alert('提交成功');
         that.message = ''
+        this.submit_status = false;
       })
         .catch(function (error) {
           console.log(error);

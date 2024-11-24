@@ -1,93 +1,133 @@
 <template>
-  <div class="login-container-card">
-    <h1>秋风倦客</h1>
-    <wired-card elevation="3" class="login-input-card">
-      <input placeholder="输入密钥" v-model="passData" />
-    </wired-card>
-    <wired-button class="login-commit-btn" elevation="2" v-on:click="greet">登录</wired-button>
+  <div class="index-container-card">
+    <img :src="index_love" alt="" v-on:click="navigateTo('/love_firework')">
+    <h1>今天是我们恋爱的第{{ love_days }}天</h1>
+
+    <wired-link :href="link_href">开发日志</wired-link>
+
+    <wired-button
+      class="link_list_0"
+      v-on:click="navigateTo('/message')"
+      elevation="3"
+    >悄悄话</wired-button>
+
+    <wired-button
+      class="link_list_1"
+      v-on:click="navigateTo('/card_game')"
+      elevation="3"
+    >神秘卡片</wired-button>
+
+    <!-- <wired-button class="link_list_1">小游戏(开发中)</wired-button> -->
   </div>
 </template>
 
 <script>
-import "wired-elements";
-import axios from 'axios';
-import cookie from './src/static/cookie.js';
+import "wired-elements"
+import axios from 'axios'
+
+const index_love = ref(new URL("~/static/index_love.jpg", import.meta.url).href)
 //选项式API
 export default {
   data() {
     return {
-      passData: ''
+      passData: '',
+      index_love: index_love,
+      love_start_day: "2024/07/05",
+      link_href: process.env.NODE_ENV === 'development' ? "/log" : "/qfjk/message/log"
     }
   },
-  methods: {
-    greet() {
-      console.log(this.passData)
-      axios({
-        withCredentials: true,
-        url: '/qfjk_api/login',
-        method: 'post',
-        data: {
-          'login_token': this.passData
-        },
-        headers: {
-          "Content-Type": "application/json"
-        },
-        responseType: 'json' // 假设服务器返回JSON格式的数据
-      }).then(response => {
-        console.log(response);
-        if (response.status === 200 && response.data.status === 1) {
-          // cookie.setCookie('temp_token', response.data.temp_token, 1);
-          console.log("login success", "temp_token", cookie.getCookie('temp_token'));
-          navigateTo('/msg_write')
-        } else {
-          console.log("login fail");
-        }
-        this.isRotate = false; // 注意这里的this可能需要根据上下文进行调整，如果这段代码在某个方法中，可能需要用箭头函数或在外部保存this的引用
-      }).catch(error => {
-        console.error("Request failed:", error);
-      });
+  computed: {
+    love_days() {
+      var love_days = Math.floor((new Date() - new Date(this.love_start_day)) / (1000 * 60 * 60 * 24));
+      return love_days;
     }
-  }
+  },
+  mounted() {
+    axios({
+      withCredentials: true,
+      url: '/qfjk_api/verify',
+      method: 'post'
+    })
+      .then(response => {
+        console.log(response.data);
+
+        if (response.status === 200 && response.data.status === 1) {
+          console.log("verify success");
+        } else {
+          console.log("verify fail");
+          navigateTo('/login')
+        }
+      })
+      .catch(error => {
+        console.error("Request failed:", error);
+        navigateTo('/login')
+      });
+
+  },
 }
 </script>
 
 <style lang="scss">
-.login-container-card {
-  width: 90%;
-  height: 60vh;
-  margin-left: calc(5% - 4px);
-  margin-top: 15vh;
+body {
+  background: white;
+  width: 100vw;
+  height: 100vh;
+}
+
+.index-container-card {
+  position: relative;
+
+  --love-img-height: 30vh;
+  --love-img-top: 20vh;
+  --love-h1-margin-top: 3vh;
+  --love-h1-height: 5vh;
+  --love-link-0-margin-top: 10vh;
+  --love-link-height: 5vh;
+  --love-link-1-margin-top: 2vh;
+
+  img {
+    position: absolute;
+    object-fit: contain;
+    object-position: top;
+    height: var(--love-img-height);
+    width: 50%;
+    left: 25%;
+    top: var(--love-img-top);
+  }
 
   h1 {
+    position: absolute;
+    width: 50%;
+    left: 25%;
+    top: calc(var(--love-img-top) + var(--love-img-height));
+    margin-top: var(--love-h1-margin-top);
+    margin-bottom: 0;
+    height: var(--love-h1-height);
     text-align: center;
-    height: 8vh;
-    margin: 9vh 0 13vh 0;
-    font-size: 8vh;
-  }
-}
+    font-size: var(--love-h1-height);
+    line-height: 1;
 
-.login-input-card {
-  width: 80%;
-  margin-left: calc(10% - 4px);
-  height: 40px;
-
-  input {
-    width: calc(100% - 20px);
-    margin-left: 10px;
-    height: calc(40px - 5px);
-    border: none;
-    padding: 5px;
-    resize: none;
-    outline: none;
-    font-size: 20px;
-    font-family: 'qiantubifengshouxieti';
+    font-size: 28px;
   }
 
-}
+  .link_list_0 {
+    position: absolute;
+    width: 50%;
+    left: 25%;
+    top: calc(var(--love-img-top) + var(--love-img-height) + var(--love-h1-margin-top) + var(--love-h1-height));
+    margin-top: var(--love-link-0-margin-top);
+    height: var(--love-link-height);
+    text-align: center;
+  }
 
-.login-commit-btn {
-  width: 80px;
-  margin-top: 5vh;
-  margin-left: calc(50% - 40px);
+  .link_list_1 {
+    position: absolute;
+    width: 50%;
+    left: 25%;
+    top: calc(var(--love-img-top) + var(--love-img-height) + var(--love-h1-margin-top) + var(--love-h1-height) + var(--love-link-0-margin-top) + var(--love-link-height));
+    height: var(--love-link-height);
+    margin-top: var(--love-link-1-margin-top);
+    text-align: center;
+  }
 }
 </style>
